@@ -7,25 +7,23 @@ app = Flask(__name__)
 CORS(app)
 
 def get_math_properties(number):
-  """
-  Calculates and returns interesting mathematical properties of a given number.
+    """
+    Calculates and returns interesting mathematical properties of a given number.
 
-  Args:
+    Args:
     number: The input number.
 
-  Returns:
+    Returns:
     A dictionary containing the calculated properties and a fun fact.
-  """
-  properties = ({
-      "number": number,
-      "is_prime": is_prime(number),
-      "is_perfect": is_perfect(number),
-      "properties": check_number(number),
-      "digit_sum": digit_sum(number),
-      "fun_fact": fun_fact(number),
-  }), 200
-
-  return properties
+    """
+    return {
+        "number": number,
+        "is_prime": is_prime(number),
+        "is_perfect": is_perfect(number),
+        "properties": check_number(number),
+        "digit_sum": digit_sum(number),
+        "fun_fact": fun_fact(number),
+    }
 
 def is_prime(number):
   """Checks if a num is prime."""
@@ -38,14 +36,18 @@ def is_prime(number):
 
 def is_perfect(number):
     """checks if a num is a perfect num"""
-    Sum = 0
-    for i in range(1, number):
-        if(number % i == 0):
-            Sum = Sum + i
-    if (Sum == number):
-        return True
-    else:
-        return False
+    # Sum = 0
+    # for i in range(1, number):
+    #     if(number % i == 0):
+    #         Sum = Sum + i
+    # if (Sum == number):
+    #     return True
+    # else:
+    #     return False
+    if number < 1:
+       return False
+    Sum = sum(i for i in range(1, number) if number % i == 0)
+    return Sum == number
 
 def digit_sum(number):
     summ = sum(int(d) for d in str(abs(number)))
@@ -93,14 +95,17 @@ def check_number(number):
   return results
 
 def fun_fact(number):
-   URL = f"http://numbersapi.com/{number}/math?json"
+   try:
+       URL = f"http://numbersapi.com/{number}/?json"
 
-   with urlopen(URL) as response:
-      body = response.read()
-   fact = json.loads(body)
-   fun_fact = fact["text"]
+       with urlopen(URL) as response:
+          body = response.read()
+       fact = json.loads(body)
+       fun_fact = fact["text"]
 
-   return fun_fact
+       return fun_fact
+   except Exception:
+      return "No fun fact available at the moment"
 
 @app.route('/')
 def hello_world():
