@@ -110,15 +110,16 @@ def hello_world():
 def get_math_properties_endpoint():
     """Endpoint to retrieve mathematical properties of a number."""
     num = request.args.get('number')
-    if request.method == 'GET' and num is not None :
-        number = int(float(request.args.get('number')))
-        properties = get_math_properties(number)
-        return jsonify(properties)
-    else:
-        return jsonify({
-           "number": request.args.get('number'),
-           "error": True,
-           }), 400
+    if request.method == 'GET' and num is not None:
+        try:
+            number = int(float(num))
+            properties = get_math_properties(number)
+            return jsonify(properties)
+        except ValueError:
+            return jsonify({
+               "number": request.args.get('number'),
+               "error": True,
+               }), 400
 
 if __name__ == '__main__':
   app.run(debug=False) 
