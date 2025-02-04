@@ -48,31 +48,27 @@ def is_perfect(number):
         return False
 
 def digit_sum(number):
-    sum = 0
-    for digit in str(number):
-      sum += int(digit)
-    return sum
+    summ = sum(int(d) for d in str(abs(number)))
+    
+    return summ
 
 def is_armstrong_number(number):
-  """
-  Checks if a number is an Armstrong number.
+    """
+    Checks if a number is an Armstrong number.
 
-  An Armstrong number is a number that is equal to the sum of cubes 
-  of its individual digits. 
+    An Armstrong number is a number that is equal to the sum of cubes 
+    of its individual digits. 
 
-  Args:
+    Args:
     num: The number to check.
 
-  Returns:
+    Returns:
     True if the number is an Armstrong number, False otherwise.
-  """
-  # Convert the number to a string
-  num_str = str(number)
-  
-  # Calculate the sum of cubes of individual digits
-  sum_of_cubes = sum(int(digit)**3 for digit in num_str)
-  
-  return number == sum_of_cubes
+    """
+    number = abs(number)
+    digits =[int(d) for d in str(number)]
+    num_digits = len(digits)
+    return sum(d ** num_digits for d in digits) == number
 
 def check_number(number):
   """
@@ -97,7 +93,7 @@ def check_number(number):
   return results
 
 def fun_fact(number):
-   URL = "http://numbersapi.com/"+str(number)+"/math?json"
+   URL = f"http://numbersapi.com/{number}/math?json"
 
    with urlopen(URL) as response:
       body = response.read()
@@ -112,14 +108,13 @@ def hello_world():
 
 @app.route('/api/classify-number', methods=['GET'])
 def get_math_properties_endpoint():
-  """Endpoint to retrieve mathematical properties of a number."""
-  if request.method == 'GET':
-      try:
-        number = int(request.args.get('number'))
+    """Endpoint to retrieve mathematical properties of a number."""
+    num = request.args.get('number')
+    if request.method == 'GET' and num is not None :
+        number = int(float(request.args.get('number')))
         properties = get_math_properties(number)
         return jsonify(properties)
-      except ValueError:
-        # number = request.args.get('number')
+    else:
         return jsonify({
            "number": request.args.get('number'),
            "error": True,
